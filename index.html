@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Wheels 🔥</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    @font-face {
+        font-family: "Inconsolata";
+        src: url("assets/fonts/Inconsolata-VariableFont_wdth,wght.ttf");
+    }
+
+    .container {
+        width: 85%;
+        font-family: "Inconsolata" !important;
+        font-weight: 450;
+    }
+
+    .form-select {
+        background: #FFF;
+        color: #000;
+    }
+
+    .form-select optgroup {
+        font-family: "Inconsolata" !important;
+    }
+    
+    .list-item {
+      position: relative;
+      width: 390px;
+    }
+
+    .list-item p {
+        text-shadow: 1px 1px 3px #000;
+    }
+
+    .image {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: .5s ease;
+    }
+
+    .list-item:hover .image {
+        filter: blur(6px);
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      width: 100%;
+      opacity: 0;
+      transition: .5s ease;
+    }
+
+    .list-item:hover .overlay {
+      opacity: 1;
+    }
+
+    .list-item p {
+        margin: 0;
+    }
+
+    .text {
+      color: #FFF;
+      font-size: 20px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    footer a {
+        color: black;
+    }
+
+    @media only screen and (max-width: 1000px) {
+        .container {
+            width: 100%;
+        }
+
+        .logo {
+            width: 500px !important;
+        }
+
+        .form-select {
+            width: 85% !important;
+        }
+
+        .list {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .list-item {
+            width: 350px;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="container d-flex flex-column align-items-center">
+        <img class="img-fluid logo w-50" src="https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2F1000marcas.net%2Fwp-content%2Fuploads%2F2020%2F11%2FHot-Wheels-Logo.png&f=1&nofb=1">
+        <select class="form-select text-center w-50">
+            <option selected>No Filter</option>
+            <optgroup style="font-family:arial" label="Origin">
+                <option>America</option>
+                <option>Asia</option>
+                <option>Europe</option>
+                <option>Metaverse</option>
+            </optgroup>
+            <optgroup label="Color">
+                <option>Red</option>
+                <option>Orange</option>
+                <option>Yellow</option>
+                <option>Green</option>
+                <option>Blue</option>
+                <option>Purple</option>
+                <option>Brown</option>
+                <option>Silver</option>
+                <option>Gold</option>
+                <option>Black</option>
+                <option>White</option>
+                <option>Grey</option>
+            </optgroup>
+            <optgroup label="Special">
+                <option>Has Special</option>
+                <option>No Special</option>
+            </optgroup>
+            <optgroup label="Condition">
+                <option>Good</option>
+                <option>Bad</option>
+            </optgroup>
+        </select>
+        <div class="list d-flex flex-wrap justify-content-between mt-5" id="cars"></div>
+        <footer class="p-2"><a href="https://github.com/gl00man">gl00man</a> 2022</footer>
+    </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.15.5/firebase-database.js"></script> 
+</body>
+</html>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.8.3/firebase-app.js";
+    import {getDatabase, ref, get, set, child, update, remove} from "https://www.gstatic.com/firebasejs/9.8.3/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCHeKlLLK9GY23pi7VhAPvVa0ZyT6e3HBg",
+      authDomain: "mywheels-f7c7d.firebaseapp.com",
+      databaseURL: "https://mywheels-f7c7d-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "mywheels-f7c7d",
+      storageBucket: "mywheels-f7c7d.appspot.com",
+      messagingSenderId: "543738485968",
+      appId: "1:543738485968:web:e743f47fabe15e979852d5"
+    };
+  
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase();
+    let cars = [];
+
+    const dbref = ref(db);
+
+    $("select").each(function(){
+        $(this).children("optgroup").each(function(){
+            $(this).css("fontFamily","Arial");
+            $(this).children("option").each(function(){
+                $(this).css("fontFamily","Arial");
+            });
+        });
+    });
+
+    $(document).ready(function() {
+        get(child(dbref, "Cars/")).then((snapshot) => {
+            cars = snapshot.val();
+            cars.forEach(function(car) {
+                $('#cars').prepend(`<div class=list-item><img class="float-left image rounded"src="${car.Car_img}" alt=Avatar><div class=overlay><div class=text><img class=w-50 src="${car.Brand_img}"><p>${car.Brand} ${car.Model}</p><p>${car.Origin}</p><p class="text-warning">${car.Special}</p></div></div></div>`);
+            });
+        });
+    });
+
+    $(function() {
+        $(".form-select:first-of-type").change(function() {
+            let filter = $(".form-select:first-of-type").val();
+            let filteredArr = cars;
+            if(filter != "No Filter") {
+                filteredArr = filteredArr.filter(filterCars);
+            }
+            $("#cars").empty();
+            filteredArr.forEach(function(car) {
+                $('#cars').prepend(`<div class=list-item><img class="float-left image rounded"src="${car.Car_img}" alt=Avatar><div class=overlay><div class=text><img class=w-50 src="${car.Brand_img}"><p>${car.Brand} ${car.Model}</p><p>${car.Origin}</p><p class="text-warning">${car.Special}</p></div></div></div>`);
+            });
+        });
+    });
+
+    function filterCars(car) {
+        let filter = $(".form-select:first-of-type").val();
+        if(filter == "Has Special") {
+            return car.Special != "";
+        }
+        else if (filter == "No Special") {
+            return car.Special == "";
+        }
+
+        return car.Origin == filter || car.Condition == filter || car.Color == filter;
+    }
+</script>
